@@ -6,7 +6,7 @@ Install Postgres locally. Create a database with db name and settings that match
 you wll need to replace the prodDB import with a testDB. This will cause the tests to use the local db. Do not commit this
 because it will break prod. 
 
-There is definitely a better way to do this but I haven't figured it out yet.
+There is definitely a better way to do this, but I haven't figured it out yet.
 
 ## Setting Environment Secrets
 To test locally set the following environment variables in a .env file in the root of the project:
