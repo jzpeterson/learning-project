@@ -13,8 +13,12 @@ export async function getParams(event: any): Promise<any> {
 
     const recipientPhoneNumber = params.get('To');
     const accountPhoneNumber = params.get('From');
-    return {
+    const message = params.get('Body');
+    const returnValue = {
         recipientPhoneNumber: recipientPhoneNumber,
-        accountPhoneNumber: accountPhoneNumber
+        accountPhoneNumber: accountPhoneNumber,
+        message: message,
     };
+    console.log("Returning params", returnValue)
+    return returnValue;
 }

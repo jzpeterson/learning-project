@@ -35,19 +35,16 @@ export async function initiateConversation(accountPhoneNumber: string, recipient
     await addMessageToConversation(createdConversation.id, message);
 }
 
-export async function handle_incoming_mesage(event: any) {
+export async function handleIncomingMessage(event: any): Promise<string> {
     const params = await getParams(event);
-    const recipientPhoneNumber = params.recipientPhoneNumber;
-    const accountPhoneNumber = params.accountPhoneNumber;
-    const message = params.message;
 
     const conversation =
-        await find_or_create_conversation(accountPhoneNumber, recipientPhoneNumber);
+        await find_or_create_conversation(params.accountPhoneNumber, params.recipientPhoneNumber);
 
     const messageForRecipient = {
         direction: MessageDirection.INBOUND,
         content_type: ContentTypes.TEXT,
-        content: message
+        content: params.message
     }
 
     await addMessageToConversation(conversation.id, messageForRecipient);
@@ -68,10 +65,19 @@ async function find_or_create_conversation(accountPhoneNumber: string, recipient
     const existingConversations = await selectActiveConversationsBetweenaccountAndRecipient(
         recipientPhoneNumber,
         accountPhoneNumber);
+    console.log("Existing Conversations for", recipientPhoneNumber, "and", accountPhoneNumber, existingConversations)
 
     if (existingConversations.length === 0) {
-        // return await createConversation(recipientPhoneNumber, accountPhoneNumber);
+        const conversation = {
+            'recipient_phone_number': recipientPhoneNumber,
+            'account_phone_number': accountPhoneNumber,
+            'last_update_time': new Date(),
+            'status': ConversationStatus.ACTIVE
+        };
+        console.log("Creating new conversation", conversation)
+        return await createConversation(conversation);
     }
-    return existingConversations[0]; // TODO find the most recent conversation
+    // TODO Find the most recent conversation
+    return existingConversations[0];
 }
 

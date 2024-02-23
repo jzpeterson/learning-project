@@ -1,10 +1,10 @@
-import {handle_incoming_mesage} from "@rest-api/core/conversations/conversationManager";
+import {handleIncomingMessage} from "@rest-api/core/conversations/conversationManager";
 
 const {MessagingResponse} = require("twilio").twiml;
 
 export const handler = async (event: any) => {
     console.log("Twilio Event Received: \n", event);
-    const nextMessage = await handle_incoming_mesage(event)
+    const nextMessage = await handleIncomingMessage(event)
 
     const twiml = new MessagingResponse();
 

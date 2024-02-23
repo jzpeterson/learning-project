@@ -4,17 +4,11 @@ import { generateNextResponse } from '../../src/conversations/responseGenerator'
 import { Message } from '../../src/db/types/public/Message';
 import { MessageDirection } from '../../src/conversations/enums/MessageDirection';
 
-// Mock the MessageRepository
 vi.mock('../../src/db/repositories/MessageRepository', () => ({
     getMessagesForConversation: vi.fn(),
 }));
 
 describe('generateNextResponse', () => {
-    beforeAll(() => {
-        // Reset mocks before each test suite
-        vi.resetAllMocks();
-    });
-
     it('should generate the first response if no messages are found', async () => {
         MessageRepository.getMessagesForConversation.mockResolvedValueOnce([]);
 

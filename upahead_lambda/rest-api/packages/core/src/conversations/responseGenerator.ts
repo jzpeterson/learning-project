@@ -3,6 +3,7 @@ import {Message} from "../db/types/public/Message";
 import {MessageDirection} from "./enums/MessageDirection";
 
 export async function generateNextResponse(conversationId: string): Promise<string> {
+    console.log("Generating next response for conversationId", conversationId)
     const messages = await getMessagesForConversation(conversationId);
     console.log("conversation ID", conversationId)
     console.log("messages for conversationId", messages)
@@ -34,7 +35,6 @@ async function calculateNextMessageIndex(messages: Message[]): Promise<number> {
     console.log("Returning index", index)
     return index;
 }
-// TODO Add a default message for when no messages are found.
 
 const conversationConfiguration = {
     '0':{
