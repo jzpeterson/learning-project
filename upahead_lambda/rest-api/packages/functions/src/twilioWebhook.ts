@@ -1,15 +1,15 @@
+import {handle_incoming_mesage} from "@rest-api/core/conversations/conversationManager";
+
 const {MessagingResponse} = require("twilio").twiml;
 
 export const handler = async (event: any) => {
     console.log("Twilio Event Received: \n", event);
-    // Save response to the DB #TODO
-
-    // Generate Twilio Response
+    const nextMessage = await handle_incoming_mesage(event)
 
     const twiml = new MessagingResponse();
 
     const message = twiml.message();
-    message.body("Check if the twilio response is working");
+    message.body(nextMessage);
 
     return {
         statusCode: 200,

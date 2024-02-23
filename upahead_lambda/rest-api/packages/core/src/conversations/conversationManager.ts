@@ -9,6 +9,7 @@ import {sendTwilioMessage} from "../clients/twilioClient";
 import {MessageDirection} from "./enums/MessageDirection";
 import {addMessageToConversation} from "../db/repositories/MessageRepository";
 import {ContentTypes} from "./enums/ContentTypes";
+import {generateNextResponse} from "./responseGenerator";
 
 export async function initiateConversation(accountPhoneNumber: string, recipientPhoneNumber: string) {
     await updateConversationStatusByRecipientAndAccountPhoneNumber(recipientPhoneNumber,
@@ -22,7 +23,7 @@ export async function initiateConversation(accountPhoneNumber: string, recipient
     }
     const createdConversation = await createConversation(newConversation)
 
-    const generatedMessage = "Hey"
+    const generatedMessage = await generateNextResponse(createdConversation.id)
 
     await sendTwilioMessage(generatedMessage, accountPhoneNumber, recipientPhoneNumber);
 
@@ -34,11 +35,33 @@ export async function initiateConversation(accountPhoneNumber: string, recipient
     await addMessageToConversation(createdConversation.id, message);
 }
 
-export async function generateNextResponse(event: any) {
+export async function handle_incoming_mesage(event: any) {
     const params = await getParams(event);
-    const currentConversation = await find_or_create_conversation(
-        params.accountPhoneNumber, params.recipientPhoneNumber);
-    // addMessageToConversation('currentConversation.ConversationID', "Check if the twilio response is working", MessageDirection.INBOUND, "text");
+    const recipientPhoneNumber = params.recipientPhoneNumber;
+    const accountPhoneNumber = params.accountPhoneNumber;
+    const message = params.message;
+
+    const conversation =
+        await find_or_create_conversation(accountPhoneNumber, recipientPhoneNumber);
+
+    const messageForRecipient = {
+        direction: MessageDirection.INBOUND,
+        content_type: ContentTypes.TEXT,
+        content: message
+    }
+
+    await addMessageToConversation(conversation.id, messageForRecipient);
+
+    const generatedMessage = await generateNextResponse(conversation.id);
+
+    const messageForAccount = {
+        direction: MessageDirection.OUTBOUND,
+        content_type: ContentTypes.TEXT,
+        content: generatedMessage
+    }
+
+    await addMessageToConversation(conversation.id, messageForAccount);
+    return generatedMessage
 }
 
 async function find_or_create_conversation(accountPhoneNumber: string, recipientPhoneNumber: string) {

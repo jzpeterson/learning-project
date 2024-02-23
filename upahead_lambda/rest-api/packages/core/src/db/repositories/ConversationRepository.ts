@@ -1,8 +1,8 @@
 import {ConversationStatus} from "../../conversations/enums/ConversationStatus";
-import {testDB} from "../../../test/db/test_postgresConversationsDB";
 import {NewConversation} from "../types/public/Conversation";
+import {prodDB} from "../postgresConversationsDB";
 
-const db = testDB
+const db = prodDB
 
 export async function getConversationById(id: string) {
     return await db

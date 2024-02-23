@@ -4,20 +4,21 @@ import * as MessageRepository from "../../src/db/repositories/MessageRepository"
 import * as twilioClient from "../../src/clients/twilioClient";
 import {initiateConversation} from "../../src/conversations/conversationManager";
 import {ConversationStatus} from "../../src/conversations/enums/ConversationStatus";
+import {generateNextResponse} from "../../src/conversations/responseGenerator";
 
 describe('Test Conversation Manager', () => {
     const accountPhoneNumber = '8017916516';
     const recipientPhoneNumber = '1111111111';
     const conversationId = '12343123123';
-    const status = ConversationStatus.ACTIVE;
-    const startTime = new Date();
-    const lastUpdateTime = new Date();
     beforeAll(() => {
         vi.mock('../../src/db/repositories/ConversationRepository', () => ({
             createConversation: vi.fn(() => Promise.resolve({
                 id: '12343123123',
             })),
             updateConversationStatusByRecipientAndAccountPhoneNumber: vi.fn(() => Promise.resolve({/* mock result */})),
+        }));
+        vi.mock('../../src/conversations/responseGenerator', () => ({
+            generateNextResponse: vi.fn(() => Promise.resolve("Cool Message")),
         }));
         vi.mock('../../src/db/repositories/MessageRepository', () => ({
             addMessageToConversation: vi.fn(() => Promise.resolve({/* mock result */})),
@@ -49,10 +50,8 @@ describe('Test Conversation Manager', () => {
             })),
         }));
     });
-    it('should deactivate previous conversation then create a conversation', async () => {
+    it('should run business logic to generate response', async () => {
         // Given
-
-
         // When
         await initiateConversation(accountPhoneNumber, recipientPhoneNumber);
 
@@ -69,8 +68,11 @@ describe('Test Conversation Manager', () => {
             status: ConversationStatus.ACTIVE
         });
 
+        expect(generateNextResponse).toHaveBeenCalledOnce();
+        expect(generateNextResponse).toHaveBeenCalledWith(conversationId);
+
         expect(twilioClient.sendTwilioMessage).toHaveBeenCalledOnce();
-        expect(twilioClient.sendTwilioMessage).toHaveBeenCalledWith("Hey", accountPhoneNumber, recipientPhoneNumber);
+        expect(twilioClient.sendTwilioMessage).toHaveBeenCalledWith("Cool Message", accountPhoneNumber, recipientPhoneNumber);
 
         expect(MessageRepository.addMessageToConversation).toHaveBeenCalledTimes(1);
         expect(MessageRepository.addMessageToConversation).toHaveBeenCalledWith(
@@ -78,7 +80,7 @@ describe('Test Conversation Manager', () => {
             {
                 direction: "OUTBOUND",
                 content_type: "text",
-                content: "Hey"
+                content: "Cool Message"
             }
         );
 

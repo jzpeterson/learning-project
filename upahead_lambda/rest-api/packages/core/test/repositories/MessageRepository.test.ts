@@ -66,4 +66,3 @@ describe('MessageRepository', () => {
         expect(conversation[1].id).toEqual(secondMessage.id);
     });
 });
-
