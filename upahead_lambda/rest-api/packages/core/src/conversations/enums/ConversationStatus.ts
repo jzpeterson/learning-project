@@ -1,0 +1,5 @@
+export enum ConversationStatus {
+    ACTIVE = "ACTIVE",
+    COMPLETED = "COMPLETED",
+    TERMINATED_INCOMPLETE = "TERMINATED_INCOMPLETE"
+}
