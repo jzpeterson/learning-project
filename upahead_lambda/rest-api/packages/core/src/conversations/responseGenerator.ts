@@ -9,10 +9,14 @@ export async function generateNextResponse(conversationId: string): Promise<stri
 
     const index = await calculateNextMessageIndex(messages);
 
-    return conversationConfiguration[index.toString()].messageText;
+    const messageConfig = conversationConfiguration[index.toString()];
+    if (!messageConfig) {
+        return 'Default message';
+    }
+    return messageConfig.messageText;
 }
 
-async function calculateNextMessageIndex(messages: [Message]): Promise<number> {
+async function calculateNextMessageIndex(messages: Message[]): Promise<number> {
     if (!messages) {
         console.log("No messages found returning index 0")
         return 0;
@@ -22,7 +26,7 @@ async function calculateNextMessageIndex(messages: [Message]): Promise<number> {
         message => message.direction == MessageDirection.OUTBOUND);
     console.log("outboundMessages", outboundMessages)
 
-    if (!outboundMessages) {
+    if (outboundMessages.length === 0) {
         console.log("No outbound messages found returning index 0")
         return 0;
     }

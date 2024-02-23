@@ -1,83 +1,57 @@
-import {beforeEach, describe, expect, it, vi} from "vitest";
-import {generateNextResponse} from "../../src/conversations/responseGenerator";
-import {MessageDirection} from "../../src/conversations/enums/MessageDirection";
-import {getMessagesForConversation} from "../../src/db/repositories/MessageRepository";
+import { beforeAll, describe, expect, it, vi } from 'vitest';
+import * as MessageRepository from '../../src/db/repositories/MessageRepository';
+import { generateNextResponse } from '../../src/conversations/responseGenerator';
+import { Message } from '../../src/db/types/public/Message';
+import { MessageDirection } from '../../src/conversations/enums/MessageDirection';
 
-// TODO figure out how mocks are working because this file is super broken.
-// describe('Test responseGenerator', () => {
-//     beforeEach(async () => {
-//         const mockMessagesForConversation = vi.fn(() => Promise.resolve([
-//         // Any setup that needs to happen before each test, including re-mocking modules
-//     });
-//     it('should return the second message if a single outbound message is found', async () => {
-//         // Given
-//         // vi.mock('../../src/db/repositories/MessageRepository', () => ({
-//         //     getMessagesForConversation: vi.fn(() => Promise.resolve([
-//         //         {direction: MessageDirection.INBOUND},
-//         //         {direction: MessageDirection.OUTBOUND},
-//         //         {direction: MessageDirection.INBOUND}])),
-//         // }));
-//
-//         // When
-//         const message = await generateNextResponse('159')
-//
-//         // Then
-//         expect(message).toEqual('Second Message');
-//     });
-//
-//     it('should return the first message if an empty list of messages are returned', async () => {
-//         // Given
-//         // vi.mock('../../src/db/repositories/MessageRepository', () => ({
-//         //     getMessagesForConversation: vi.fn(() => Promise.resolve([])),
-//         // }));
-//
-//         // When
-//         const message = await generateNextResponse('159')
-//
-//         // Then
-//         expect(message).toEqual('First Message');
-//     });
-//
-//     it('should return the first message if null is returned', async () => {
-//         // Given
-//         // vi.mock('../../src/db/repositories/MessageRepository', () => ({
-//         //     getMessagesForConversation: vi.fn(() => Promise.resolve(null)),
-//         // }));
-//
-//         // When
-//         const message = await generateNextResponse('159')
-//
-//         // Then
-//         expect(message).toEqual('First Message');
-//     });
-//
-//     it('should return the first message if only a single inbound message is found', async () => {
-//         // Given
-//         vi.mock('../../src/db/repositories/MessageRepository', () => ({
-//             getMessagesForConversation: vi.fn(() => Promise.resolve([{direction: MessageDirection.INBOUND}])),
-//         }));
-//
-//         // When
-//         const message = await generateNextResponse('159')
-//
-//         // Then
-//         expect(message).toEqual('First Message');
-//     });
-//
-//     it('should return the first message if only multiple inbound messages are found', async () => {
-//         // Given
-//         vi.mock('../../src/db/repositories/MessageRepository', () => ({
-//             getMessagesForConversation: vi.fn(() => Promise.resolve([
-//                 {direction: MessageDirection.INBOUND},
-//                 {direction: MessageDirection.INBOUND},
-//                 {direction: MessageDirection.INBOUND}])),
-//         }));
-//
-//         // When
-//         const message = await generateNextResponse('159')
-//
-//         // Then
-//         expect(message).toEqual('First Message');
-//     });
-//
-// });
+// Mock the MessageRepository
+vi.mock('../../src/db/repositories/MessageRepository', () => ({
+    getMessagesForConversation: vi.fn(),
+}));
+
+describe('generateNextResponse', () => {
+    beforeAll(() => {
+        // Reset mocks before each test suite
+        vi.resetAllMocks();
+    });
+
+    it('should generate the first response if no messages are found', async () => {
+        MessageRepository.getMessagesForConversation.mockResolvedValueOnce([]);
+
+        const response = await generateNextResponse('conversationId1');
+        expect(response).toBe('First Message');
+        expect(MessageRepository.getMessagesForConversation).toHaveBeenCalledWith('conversationId1');
+    });
+
+    it('should generate the correct response based on the number of outbound messages', async () => {
+        // Simulate a scenario where there are two outbound messages
+        const mockMessages: Message[] = [
+            { direction: MessageDirection.OUTBOUND, content: 'Hello', timestamp: new Date() },
+            { direction: MessageDirection.OUTBOUND, content: 'How are you?', timestamp: new Date() },
+        ];
+        MessageRepository.getMessagesForConversation.mockResolvedValueOnce(mockMessages);
+
+        const response = await generateNextResponse('conversationId2');
+        expect(response).toBe('Third Message');
+        expect(MessageRepository.getMessagesForConversation).toHaveBeenCalledWith('conversationId2');
+    });
+
+    it('should return the default message when the index is out of bounds', async () => {
+        // Simulate a scenario where there are more outbound messages than the conversationConfiguration covers
+        const mockMessages: Message[] = new Array(5).fill({ direction: MessageDirection.OUTBOUND, content: 'Message', timestamp: new Date() });
+        MessageRepository.getMessagesForConversation.mockResolvedValueOnce(mockMessages);
+
+        const response = await generateNextResponse('conversationId3');
+        expect(response).toBe('Default message'); // Assuming you implemented the suggested default message handling
+        expect(MessageRepository.getMessagesForConversation).toHaveBeenCalledWith('conversationId3');
+    });
+
+    it('should handle errors gracefully when fetching messages fails', async () => {
+        // Simulate a failure in fetching messages
+        MessageRepository.getMessagesForConversation.mockRejectedValueOnce(new Error('Database error'));
+
+        await expect(generateNextResponse('conversationId4')).rejects.toThrow('Database error');
+    });
+
+    // Add more tests as needed to cover all scenarios and edge cases
+});
