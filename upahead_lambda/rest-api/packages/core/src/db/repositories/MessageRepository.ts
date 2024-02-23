@@ -1,8 +1,8 @@
-import {testDB} from "../../../test/db/test_postgresConversationsDB";
 import {Message} from "../types/public/Message";
+import {prodDB} from "../postgresConversationsDB";
 
 
-const db = testDB;
+const db = prodDB;
 
 export async function addMessageToConversation(conversationId: string, message: Message) {
     return await db

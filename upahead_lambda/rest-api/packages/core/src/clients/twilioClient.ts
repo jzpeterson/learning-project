@@ -1,7 +1,8 @@
 import twilio from 'twilio';
+import {Config} from "sst/node/config";
 
-const accountSid: string = process.env.TWILIO_ACCOUNT_SID!;
-const authToken: string = process.env.TWILIO_AUTH_TOKEN!;
+const accountSid: string = Config.TWILIO_ACCOUNT_SID;
+const authToken: string = Config.TWILIO_AUTH_TOKEN;
 
 const client = twilio(accountSid, authToken);
 
@@ -11,6 +12,7 @@ export async function sendTwilioMessage(
     to: string
 ): Promise<any> {
 
+    console.log("Sending message to", to, "from", from, "with body", body)
     try {
         return await client.messages
             .create({body, from, to});
