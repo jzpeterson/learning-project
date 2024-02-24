@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import * as ConversationRepository from "../../src/db/repositories/ConversationRepository";
 import * as MessageRepository from '../../src/db/repositories/MessageRepository';
 import { generateNextResponse } from '../../src/conversations/responseGenerator';
 import { Message } from '../../src/db/types/public/Message';
 import { MessageDirection } from '../../src/conversations/enums/MessageDirection';
-import * as ConversationRepository from "../../src/db/repositories/ConversationRepository";
 
 vi.mock('../../src/db/repositories/MessageRepository', () => ({
     getMessagesForConversation: vi.fn(),
@@ -39,7 +39,6 @@ describe('generateNextResponse', () => {
         ];
         MessageRepository.getMessagesForConversation.mockResolvedValueOnce(mockMessages);
 
-
         // When
         const response = await generateNextResponse('conversationId2');
 
@@ -54,7 +53,6 @@ describe('generateNextResponse', () => {
         // Simulate a scenario where there are more outbound messages than the conversationConfiguration covers
         const mockMessages: Message[] = new Array(5).fill({ direction: MessageDirection.OUTBOUND, content: 'Message', timestamp: new Date() });
         MessageRepository.getMessagesForConversation.mockResolvedValueOnce(mockMessages);
-
 
         // When
         const response = await generateNextResponse('conversationId3');
