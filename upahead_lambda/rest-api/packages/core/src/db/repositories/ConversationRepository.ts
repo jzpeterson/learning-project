@@ -21,7 +21,7 @@ export async function createConversation(conversation: NewConversation) {
         .executeTakeFirstOrThrow()
 }
 
-export async function selectActiveConversationsBetweenaccountAndRecipient(recipientPhoneNumber: string, accountPhoneNumber: string) {
+export async function selectActiveConversationsBetweenAccountAndRecipient(recipientPhoneNumber: string, accountPhoneNumber: string) {
     console.log("Selecting active conversations between", recipientPhoneNumber, "and", accountPhoneNumber)
     return await db
         .selectFrom("Conversation")

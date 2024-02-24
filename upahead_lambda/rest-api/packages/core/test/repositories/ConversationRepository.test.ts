@@ -3,7 +3,7 @@ import {
     createConversation,
     deleteConversation,
     getConversationById,
-    selectActiveConversationsBetweenaccountAndRecipient,
+    selectActiveConversationsBetweenAccountAndRecipient,
     updateConversationStatus, updateConversationStatusByRecipientAndAccountPhoneNumber
 } from "../../src/db/repositories/ConversationRepository";
 import {ConversationStatus} from "../../src/conversations/enums/ConversationStatus";
@@ -48,7 +48,7 @@ describe('Test Conversations Repository', () => {
         await createConversationForTest(recipient_phone_number, account_phone_number, status)
         // when
         const active_conversations =
-            await selectActiveConversationsBetweenaccountAndRecipient(recipient_phone_number, account_phone_number)
+            await selectActiveConversationsBetweenAccountAndRecipient(recipient_phone_number, account_phone_number)
         console.log(active_conversations);
 
         // then
@@ -96,7 +96,7 @@ describe('Test Conversations Repository', () => {
         await updateConversationStatusByRecipientAndAccountPhoneNumber(uniqueRecipientPhoneNumber, account_phone_number, ConversationStatus.TERMINATED_INCOMPLETE);
 
         // Then
-        const updatedConversations = await selectActiveConversationsBetweenaccountAndRecipient(uniqueRecipientPhoneNumber, account_phone_number);
+        const updatedConversations = await selectActiveConversationsBetweenAccountAndRecipient(uniqueRecipientPhoneNumber, account_phone_number);
         for (const item of updatedConversations) {
             expect(item.status).toBe(ConversationStatus.TERMINATED_INCOMPLETE);
         }

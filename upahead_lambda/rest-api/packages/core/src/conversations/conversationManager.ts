@@ -1,6 +1,6 @@
 import {
     createConversation,
-    selectActiveConversationsBetweenaccountAndRecipient,
+    selectActiveConversationsBetweenAccountAndRecipient,
     updateConversationStatusByRecipientAndAccountPhoneNumber
 } from "../db/repositories/ConversationRepository";
 import {getParams} from "./utils/base64Decoder";
@@ -62,7 +62,7 @@ export async function handleIncomingMessage(event: any): Promise<string> {
 }
 
 async function find_or_create_conversation(accountPhoneNumber: string, recipientPhoneNumber: string) {
-    const existingConversations = await selectActiveConversationsBetweenaccountAndRecipient(
+    const existingConversations = await selectActiveConversationsBetweenAccountAndRecipient(
         recipientPhoneNumber,
         accountPhoneNumber);
     console.log("Existing Conversations for", recipientPhoneNumber, "and", accountPhoneNumber, existingConversations)
