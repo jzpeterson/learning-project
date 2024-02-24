@@ -109,7 +109,6 @@ describe('Base64 decoder', () => {
         expect(params).toEqual({
             "accountPhoneNumber": "+19168720460",
             "mediaContentType": "video/3gpp",
-            //           https://api.twilio.com/2010-04-01/Accounts/ACb2722d11b73d22b594c81d79aed6b8d2/Messages/MMf3aec14a0afd453f9b8809032b043ad0/Media/ME4daf2ae187fcf9e29503f1d6b25b78ce
             "mediaUrl": "https://api.twilio.com/2010-04-01/Accounts/ACb2722d11b73d22b594c81d79aed6b8d2/Messages/MMc77c5b58b354486f9a324b02b86ec702/Media/ME9865dd22dff6f1f8d9f29a61895fb165",
             "message": "",
             "numMedia": "1",
