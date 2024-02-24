@@ -1,4 +1,4 @@
-export const singleVideoTwilioWebhookEventApple = {
+export const singleImageTwilioWebhookEventApple = {
   "version": "2.0",
   "routeKey": "POST /webhook/twilio",
   "rawPath": "/webhook/twilio",
