@@ -18,7 +18,11 @@ export async function getParams(event: any): Promise<any> {
         recipientPhoneNumber: recipientPhoneNumber,
         accountPhoneNumber: accountPhoneNumber,
         message: message,
+        mediaContentType: params.get('MediaContentType0'),
+        numMedia: params.get('NumMedia'),
+        mediaUrl: params.get('MediaUrl0')
     };
-    console.log("Returning params", returnValue)
+    console.log("Decoded Event Body", decodedEvent);
+    console.log("Returning params", returnValue);
     return returnValue;
 }

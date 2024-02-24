@@ -74,7 +74,6 @@ async function find_or_create_conversation(accountPhoneNumber: string, recipient
             'last_update_time': new Date(),
             'status': ConversationStatus.ACTIVE
         };
-        console.log("Creating new conversation", conversation)
         return await createConversation(conversation);
     }
     // TODO Find the most recent conversation

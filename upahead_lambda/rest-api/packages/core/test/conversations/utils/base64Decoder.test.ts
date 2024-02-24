@@ -1,5 +1,11 @@
 import {describe, expect, it} from "vitest";
 import {decodeBase64String, decodeEventBody, getParams} from "../../../src/conversations/utils/base64Decoder";
+import {
+    simpleTextTwilioWebhookEventApple
+} from "@rest-api/functions/test/resources/twilioWebhookEvents/devices/apple/basic_text_message_webhook_event_APPLE";
+import {
+    singleTenSecondVideoTwilioEventApple
+} from "@rest-api/functions/test/resources/twilioWebhookEvents/devices/apple/text_message_with_single_10_second_video_webhook_event_APPLE";
 
 describe('Base64 decoder', () => {
     it('should decode a base64 string', async () => {
@@ -26,20 +32,48 @@ describe('Base64 decoder', () => {
         expect(decodedEvent).toBe('Hello World');
     })
 
-    it('should get the params from the event', async () => {
-        // Given
-        const event = {
-            body: 'VG9Db3VudHJ5PVVTJlRvU3RhdGU9JlNtc01lc3NhZ2VTaWQ9U001MDU5M2VjNmY4YTRhOTY1NjNkOWQ2ODE3YTkwYzQyZiZOdW1NZWRpYT0wJlRvQ2l0eT0mRnJvbVppcD04NDA1MCZTbXNTaWQ9U001MDU5M2VjNmY4YTRhOTY1NjNkOWQ2ODE3YTkwYzQyZiZGcm9tU3RhdGU9VVQmU21zU3RhdHVzPXJlY2VpdmVkJkZyb21DaXR5PU9HREVOJkJvZHk9VGV4dCsxMisxMiUzQTIwcG0mRnJvbUNvdW50cnk9VVMmVG89JTJCMTg0NDYxNTE0MzAmTWVzc2FnaW5nU2VydmljZVNpZD1NR2I0MDhmZTRhOTY4ODc1ZGZmZTBiODAwZDA4Y2Q2Mzc4JlRvWmlwPSZOdW1TZWdtZW50cz0xJk1lc3NhZ2VTaWQ9U001MDU5M2VjNmY4YTRhOTY1NjNkOWQ2ODE3YTkwYzQyZiZBY2NvdW50U2lkPUFDYjI3MjJkMTFiNzNkMjJiNTk0YzgxZDc5YWVkNmI4ZDImRnJvbT0lMkIxODAxNzkxNjUxNiZBcGlWZXJzaW9uPTIwMTAtMDQtMDE=',
-        };
-
+    it('should get the params from a simple text (text only without any media) event', async () => {
         // When
-        const params = await getParams(event);
+        const params = await getParams(simpleTextTwilioWebhookEventApple);
 
         // Then
         expect(params).toEqual({
-            recipientPhoneNumber: "+18446151430",
-            accountPhoneNumber: "+18017916516",
-            message: "Text 12 12:20pm"
+            "accountPhoneNumber": "+18017916516",
+            "mediaContentType": null,
+            "mediaUrl": null,
+            "message": "Text 12 12:20pm",
+            "numMedia": "0",
+            "recipientPhoneNumber": "+18446151430",
+        });
+    });
+
+    it('should get the params from a text with a single video event', async () => {
+        // When
+        const params = await getParams(singleTenSecondVideoTwilioEventApple);
+
+        // Then
+        expect(params).toEqual({
+            "accountPhoneNumber": "+18017916516",
+            "mediaContentType": "video/3gpp",
+            "mediaUrl": "https://api.twilio.com/2010-04-01/Accounts/ACb2722d11b73d22b594c81d79aed6b8d2/Messages/MMf3aec14a0afd453f9b8809032b043ad0/Media/ME4daf2ae187fcf9e29503f1d6b25b78ce",
+            "message": "",
+            "numMedia": "1",
+            "recipientPhoneNumber": "+18446151430",
+        });
+    });
+
+    it('should get the params from a text with a single image event', async () => {
+        // When
+        const params = await getParams(singleTenSecondVideoTwilioEventApple);
+
+        // Then
+        expect(params).toEqual({
+            "accountPhoneNumber": "+18017916516",
+            "mediaContentType": "video/3gpp",
+            "mediaUrl": "https://api.twilio.com/2010-04-01/Accounts/ACb2722d11b73d22b594c81d79aed6b8d2/Messages/MMf3aec14a0afd453f9b8809032b043ad0/Media/ME4daf2ae187fcf9e29503f1d6b25b78ce",
+            "message": "",
+            "numMedia": "1",
+            "recipientPhoneNumber": "+18446151430",
         });
     });
 });

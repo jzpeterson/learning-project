@@ -15,7 +15,7 @@ export async function generateNextResponse(conversationId: string): Promise<stri
         completeConversation(conversationId).then(() =>
             console.log("Conversation status updated to completed"));
     }
-    // TODO I could make this more readable and cleaner. I am assuming that if there
+    // TODO I could make this more readable and cleaner. I am assuming that if
     // there is not a message config then the conversation is completed
     const messageConfig = conversationConfiguration[index.toString()];
     if (!messageConfig) {
