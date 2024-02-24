@@ -1,4 +1,4 @@
-import { beforeAll, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import * as MessageRepository from '../../src/db/repositories/MessageRepository';
 import { generateNextResponse } from '../../src/conversations/responseGenerator';
 import { Message } from '../../src/db/types/public/Message';
@@ -14,6 +14,9 @@ vi.mock('../../src/db/repositories/ConversationRepository', () => ({
 }));
 
 describe('generateNextResponse', () => {
+    beforeEach(() => {
+        vi.resetAllMocks(); // resetAllMocks and clearAllMocks both work here. I don't know why :shrug
+    });
     it('should generate the first response if no messages are found', async () => {
         MessageRepository.getMessagesForConversation.mockResolvedValueOnce([]);
 
