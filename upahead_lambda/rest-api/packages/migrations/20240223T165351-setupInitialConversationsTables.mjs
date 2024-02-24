@@ -3,7 +3,7 @@ import {Kysely, sql} from "kysely";
 /**
  * @param db {Kysely<any>}
  */
-async function up(db: Kysely<any>) {
+export async function up(db) {
     const current_timestamp = sql<null>`CURRENT_TIMESTAMP`;
     await db.schema
         .createTable('Conversation')
@@ -30,7 +30,7 @@ async function up(db: Kysely<any>) {
         .execute();
 }
 
-async function down(db: Kysely<any>) {
+export async function down(db) {
     await db.schema
         .dropTable('Message')
         .execute();
@@ -39,5 +39,3 @@ async function down(db: Kysely<any>) {
         .dropTable('Conversation')
         .execute();
 }
-
-module.exports = { up, down };
