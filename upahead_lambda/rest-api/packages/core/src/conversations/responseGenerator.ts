@@ -1,6 +1,8 @@
 import {getMessagesForConversation} from "../db/repositories/MessageRepository";
 import {Message} from "../db/types/public/Message";
 import {MessageDirection} from "./enums/MessageDirection";
+import {updateConversationStatus} from "../db/repositories/ConversationRepository";
+import {ConversationStatus} from "./enums/ConversationStatus";
 
 export async function generateNextResponse(conversationId: string): Promise<string> {
     console.log("Generating next response for conversationId", conversationId)
@@ -9,12 +11,24 @@ export async function generateNextResponse(conversationId: string): Promise<stri
     console.log("messages for conversationId", messages)
 
     const index = await calculateNextMessageIndex(messages);
+    if (index >= Object.keys(conversationConfiguration).length - 1) {
 
+        completeConversation(conversationId).then(r =>
+            console.log("Conversation status updated to completed"));
+    }
+    // TODO I could make this more readable and cleaner. I am assuming that if there
+    // there is not a message config then the conversation is completed
     const messageConfig = conversationConfiguration[index.toString()];
     if (!messageConfig) {
+        completeConversation(conversationId).then(r =>
+            console.log("Conversation status updated to completed"));
         return 'Default message';
     }
     return messageConfig.messageText;
+}
+
+async function completeConversation(conversationId: string) {
+    return await updateConversationStatus(conversationId, ConversationStatus.COMPLETED);
 }
 
 async function calculateNextMessageIndex(messages: Message[]): Promise<number> {
@@ -33,6 +47,7 @@ async function calculateNextMessageIndex(messages: Message[]): Promise<number> {
     }
     const index = outboundMessages.length;
     console.log("Returning index", index)
+
     return index;
 }
 

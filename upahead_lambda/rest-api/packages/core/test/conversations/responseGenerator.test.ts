@@ -3,9 +3,14 @@ import * as MessageRepository from '../../src/db/repositories/MessageRepository'
 import { generateNextResponse } from '../../src/conversations/responseGenerator';
 import { Message } from '../../src/db/types/public/Message';
 import { MessageDirection } from '../../src/conversations/enums/MessageDirection';
+import * as ConversationRepository from "../../src/db/repositories/ConversationRepository";
 
 vi.mock('../../src/db/repositories/MessageRepository', () => ({
     getMessagesForConversation: vi.fn(),
+}));
+
+vi.mock('../../src/db/repositories/ConversationRepository', () => ({
+    updateConversationStatus: vi.fn(),
 }));
 
 describe('generateNextResponse', () => {
@@ -15,6 +20,7 @@ describe('generateNextResponse', () => {
         const response = await generateNextResponse('conversationId1');
         expect(response).toBe('First Message');
         expect(MessageRepository.getMessagesForConversation).toHaveBeenCalledWith('conversationId1');
+        expect(ConversationRepository.updateConversationStatus).not.toHaveBeenCalled();
     });
 
     it('should generate the correct response based on the number of outbound messages', async () => {
@@ -28,6 +34,7 @@ describe('generateNextResponse', () => {
         const response = await generateNextResponse('conversationId2');
         expect(response).toBe('Third Message');
         expect(MessageRepository.getMessagesForConversation).toHaveBeenCalledWith('conversationId2');
+        expect(ConversationRepository.updateConversationStatus).toHaveBeenCalled();
     });
 
     it('should return the default message when the index is out of bounds', async () => {
@@ -38,6 +45,7 @@ describe('generateNextResponse', () => {
         const response = await generateNextResponse('conversationId3');
         expect(response).toBe('Default message'); // Assuming you implemented the suggested default message handling
         expect(MessageRepository.getMessagesForConversation).toHaveBeenCalledWith('conversationId3');
+        expect(ConversationRepository.updateConversationStatus).toHaveBeenCalled();
     });
 
     it('should handle errors gracefully when fetching messages fails', async () => {
@@ -45,6 +53,7 @@ describe('generateNextResponse', () => {
         MessageRepository.getMessagesForConversation.mockRejectedValueOnce(new Error('Database error'));
 
         await expect(generateNextResponse('conversationId4')).rejects.toThrow('Database error');
+        expect(ConversationRepository.updateConversationStatus).not.toHaveBeenCalled();
     });
 
     // Add more tests as needed to cover all scenarios and edge cases
