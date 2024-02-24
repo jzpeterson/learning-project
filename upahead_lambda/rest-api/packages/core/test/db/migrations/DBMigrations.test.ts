@@ -1,5 +1,5 @@
 import {describe, expect, it} from "vitest";
-import {down, up} from "../../../src/db/migrations/setupInitialConversationsTables";
+import {down, up} from "../../../src/db/migrations/20240223T165351-setupInitialConversationsTables";
 import {testDB} from "../test_postgresConversationsDB";
 
 
