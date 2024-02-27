@@ -90,8 +90,3 @@ export class MessageService {
     // Add more methods as needed to interact with the repository
     // and apply your business logic, such as updating or deleting messages
 }
-
-// Example usage (You would not include this in the same file typically):
-// const messageRepository = new MessageRepository();
-// const messageService = new MessageService(messageRepository);
-// messageService.addMessage('Hello, world!').then(console.log);
