@@ -5,6 +5,9 @@ node_modules
 .sst
 .build
 
+# js files in project
+./packages/*.js
+./stacks/*.js
 # opennext
 .open-next
 
@@ -13,3 +16,4 @@ node_modules
 
 # local env files
 .env*.local
+/.tmp/

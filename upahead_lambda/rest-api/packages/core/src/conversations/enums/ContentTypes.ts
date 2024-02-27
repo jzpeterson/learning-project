@@ -1,3 +1,6 @@
 export enum ContentTypes {
-    TEXT = "text",
+    TEXT = "TEXT",
+    IMAGE = "IMAGE",
+    VIDEO = "VIDEO",
+    AUDIO = "AUDIO",
 }

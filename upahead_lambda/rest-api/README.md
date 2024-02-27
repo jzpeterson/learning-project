@@ -13,6 +13,11 @@ To test locally set the following environment variables in a .env file in the ro
 ```
 TWILIO_ACCOUNT_SID
 TWILIO_AUTH_TOKEN
+
+CLOUD_CONVERT_API_KEY // This is used for our 3rd party file conversion service
+
+AWS_ACCESS_KEY_ID // This is not secure and we need a better way to authenticate :(
+AWS_SECRET_ACCESS_KEY
 ```
 To set the secrets in the AWS environment use the following commands:
 ```

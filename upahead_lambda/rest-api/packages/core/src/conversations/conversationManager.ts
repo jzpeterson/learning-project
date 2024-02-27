@@ -10,7 +10,9 @@ import {MessageDirection} from "./enums/MessageDirection";
 import {addMessageToConversation} from "../db/repositories/MessageRepository";
 import {ContentTypes} from "./enums/ContentTypes";
 import {generateNextResponse} from "./responseGenerator";
+import {CustomMessage, MessageService} from "./MessageService";
 
+const messageService: MessageService = new MessageService();
 export async function initiateConversation(accountPhoneNumber: string, recipientPhoneNumber: string) {
     await updateConversationStatusByRecipientAndAccountPhoneNumber(recipientPhoneNumber,
         accountPhoneNumber, ConversationStatus.TERMINATED_INCOMPLETE);
@@ -27,37 +29,31 @@ export async function initiateConversation(accountPhoneNumber: string, recipient
 
     await sendTwilioMessage(generatedMessage, accountPhoneNumber, recipientPhoneNumber);
 
-    const message = {
+    const message: CustomMessage = {
         direction: MessageDirection.OUTBOUND,
-        content_type: ContentTypes.TEXT,
         content: generatedMessage
     }
-    await addMessageToConversation(createdConversation.id, message);
+    await messageService.addMessage(createdConversation.id, message);
 }
 
 export async function handleIncomingMessage(event: any): Promise<string> {
-    const params = await getParams(event);
+    const inboundMessageParams = await getParams(event);
 
     const conversation =
-        await find_or_create_conversation(params.accountPhoneNumber, params.recipientPhoneNumber);
+        await find_or_create_conversation(inboundMessageParams.accountPhoneNumber, inboundMessageParams.recipientPhoneNumber);
 
-    const messageForRecipient = {
-        direction: MessageDirection.INBOUND,
-        content_type: ContentTypes.TEXT,
-        content: params.message
-    }
-
-    await addMessageToConversation(conversation.id, messageForRecipient);
+    console.log("Adding inbound message to conversation", conversation.id, inboundMessageParams)
+    await messageService.addInboundMessage(conversation.id, inboundMessageParams)
 
     const generatedMessage = await generateNextResponse(conversation.id);
 
-    const messageForAccount = {
+    const accountToRecipientMessage: CustomMessage = {
         direction: MessageDirection.OUTBOUND,
-        content_type: ContentTypes.TEXT,
-        content: generatedMessage
+        content: generatedMessage,
+        content_type: ContentTypes.TEXT
     }
-
-    await addMessageToConversation(conversation.id, messageForAccount);
+    console.log("Sending Outbound message to", inboundMessageParams.accountPhoneNumber, "from", inboundMessageParams.recipientPhoneNumber, ":", generatedMessage)
+    await messageService.addMessage(conversation.id, accountToRecipientMessage)
     return generatedMessage
 }
 
