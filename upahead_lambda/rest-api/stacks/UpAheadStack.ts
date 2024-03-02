@@ -18,6 +18,11 @@ export function UpAheadStack({stack}: StackContext) {
         engine: "postgresql13.9",
         defaultDatabaseName: CONVERSATION_DB,
         migrations: 'packages/migrations',
+        scaling: {
+            autoPause: false,
+            minCapacity: "ACU_8",
+            maxCapacity: "ACU_64",
+        },
     });
 
     const conversationsTable = new Table(stack, "ConversationsTable", {
@@ -47,10 +52,9 @@ export function UpAheadStack({stack}: StackContext) {
         routes: {
             "POST /webhook/twilio": "packages/functions/src/twilioWebhook.handler",
             "GET /conversations": "packages/functions/src/getConversationsByNumber.handler",
+            "POST /conversations": "packages/functions/src/triggerOutboundConversation.handler",
         },
     });
-
-    api.attachPermissions([conversationsTable])
 
     stack.addOutputs({
         ConversationsTableName: conversationsTable.tableName,

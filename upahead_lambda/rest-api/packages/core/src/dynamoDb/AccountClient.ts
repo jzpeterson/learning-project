@@ -1,5 +1,5 @@
-import {ConversationConfiguration} from "../conversations/models/_Conversation";
 import {ContentTypes} from "../conversations/enums/ContentTypes";
+import {PhoneNumberValidator} from "../conversations/utils/PhoneNumberValidator";
 
 export class AccountClient {
     private accounts: Account[] = [
@@ -17,10 +17,10 @@ export class AccountClient {
     ];
 
     public async getAccountByPhoneNumber(phoneNumber: string): Promise<Account | null> {
-        return this.accounts.find(account => account.internalPhoneNumber === phoneNumber) || null;
+        const validatedPhoneNumber = PhoneNumberValidator.validatePhoneNumber(phoneNumber);
+        console.log("Looking for account with internal phone number", validatedPhoneNumber);
+        return this.accounts.find(account => account.internalPhoneNumber === validatedPhoneNumber) || null;
     }
-
-
 }
 
 export interface Account {
@@ -28,4 +28,11 @@ export interface Account {
     accountName: string;
     internalPhoneNumber: string;
     conversationConfiguration: ConversationConfiguration;
+}
+
+export interface ConversationConfiguration {
+    firstMessage: string;
+    expectedResponseType: ContentTypes;
+    lastMessage: string;
+    accountId: string;
 }

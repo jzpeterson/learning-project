@@ -2,8 +2,6 @@ import {Bucket} from "sst/node/bucket";
 import {Config} from "sst/node/config";
 import cloudconvert from 'cloudconvert';
 // @ts-ignore
-console.log("CloudConvert Object: ", cloudconvert.default)
-// @ts-ignore
 const CloudConvert = cloudconvert.default;
 
 export class ConverterService {
