@@ -1,5 +1,5 @@
 import {
-    createConversation, getConversationsByAccountPhoneNumber,
+    createConversation,
     selectActiveConversationsBetweenAccountAndRecipient,
     updateConversationStatusByRecipientAndAccountPhoneNumber
 } from "../db/repositories/ConversationRepository";
@@ -38,10 +38,10 @@ export async function initiateConversation(accountPhoneNumber: string, recipient
     await messageService.addMessage(createdConversation.id, message);
 }
 
-export async function retrieveConversationsByNumber(accountPhoneNumber: string, utcDate: string) {
-    const conversations = await getConversationsByAccountPhoneNumber(accountPhoneNumber);
-    return conversations;
-}
+// export async function retrieveConversationsByNumber(accountPhoneNumber: string, utcDate: string) {
+//     const conversations = await getConversationsByAccountPhoneNumber(accountPhoneNumber);
+//     return conversations;
+// }
 
 export async function handleIncomingMessage(event: any): Promise<string> {
     const inboundMessageParams = await externalMessageParamDecoder.getParams(event);

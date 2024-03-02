@@ -1,4 +1,4 @@
-import {Api, Bucket, Config, RDS, StackContext} from "sst/constructs";
+import {Api, Bucket, Config, RDS, StackContext, Table} from "sst/constructs";
 
 
 export function UpAheadStack({stack}: StackContext) {
@@ -20,10 +20,24 @@ export function UpAheadStack({stack}: StackContext) {
         migrations: 'packages/migrations',
     });
 
+    const conversationsTable = new Table(stack, "ConversationsTable", {
+        fields: {
+            accountId: "string", // Partition key: "CONVERSATION#<accountPhoneNumber>#<recipientPhoneNumber>"
+            internalPhoneNumber: "string",
+            externalPhoneNumber: "string", // Sort key: "METADATA#" for conversation metadata, "MESSAGE#<timestamp>" for messages
+            conversationStartedAt: "string",
+            status: "string",
+            conversationConfiguration: "map",
+            messages: "list", // Since messages are nested, this is only used if querying single conversation items directly
+        },
+        primaryIndex: { partitionKey: "accountId", sortKey: "externalPhoneNumber" },
+    });
+
     const api = new Api(stack, "Api", {
         defaults: {
             function: {
                 bind: [cluster,
+                    conversationsTable,
                     VIDEO_STORAGE_BUCKET,
                     TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, // Needed for sending messages with twilio
                     CLOUD_CONVERT_API_KEY, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY], // Needed for converting files with cloud convert and uploading them to S3
@@ -36,7 +50,10 @@ export function UpAheadStack({stack}: StackContext) {
         },
     });
 
+    api.attachPermissions([conversationsTable])
+
     stack.addOutputs({
+        ConversationsTableName: conversationsTable.tableName,
         VideoStorageBucketName: VIDEO_STORAGE_BUCKET.bucketName,
         VideoStorageBucketArn: VIDEO_STORAGE_BUCKET.bucketArn,
         ApiEndpoint: api.url,
