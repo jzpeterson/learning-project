@@ -3,16 +3,17 @@ import {
     selectActiveConversationsBetweenAccountAndRecipient,
     updateConversationStatusByRecipientAndAccountPhoneNumber
 } from "../db/repositories/ConversationRepository";
-import {getParams} from "./utils/base64Decoder";
 import {ConversationStatus} from "./enums/ConversationStatus";
 import {MessageDirection} from "./enums/MessageDirection";
 import {ContentTypes} from "./enums/ContentTypes";
 import {generateNextResponse} from "./responseGenerator";
 import {CustomMessage, MessageService} from "./MessageService";
-import {TwilioClient} from "../clients/_TwilioClient";
+import {TwilioClient} from "../clients/TwilioClient";
+import {ExternalMessageParamDecoder} from "./utils/ExternalMessageParamDecoder";
 
 const twilioClient: TwilioClient = new TwilioClient();
 const messageService: MessageService = new MessageService();
+const externalMessageParamDecoder = new ExternalMessageParamDecoder();
 export async function initiateConversation(accountPhoneNumber: string, recipientPhoneNumber: string) {
     await updateConversationStatusByRecipientAndAccountPhoneNumber(recipientPhoneNumber,
         accountPhoneNumber, ConversationStatus.TERMINATED_INCOMPLETE);
@@ -42,7 +43,7 @@ export async function retrieveConversationsByNumber(accountPhoneNumber: string, 
 }
 
 export async function handleIncomingMessage(event: any): Promise<string> {
-    const inboundMessageParams = await getParams(event);
+    const inboundMessageParams = await externalMessageParamDecoder.getParams(event);
 
     const conversation =
         await find_or_create_conversation(inboundMessageParams.accountPhoneNumber, inboundMessageParams.recipientPhoneNumber);

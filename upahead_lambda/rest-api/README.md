@@ -26,3 +26,6 @@ PS C:\Users\jordo\upahead\upahead_node_project\upahead_lambda\rest-api> npx sst 
 PS C:\Users\jordo\upahead\upahead_node_project\upahead_lambda\rest-api> npx sst secrets set TWILIO_AUTH_TOKEN *********   
 ✔  Setting "TWILIO_AUTH_TOKEN"
 ```
+
+Known issues:
+- We should not have a backup webhook url in twilio or it can lead to multiple messages being sent on cold starts.

@@ -1,8 +1,8 @@
 import * as MessageRepository from "../db/repositories/MessageRepository";
 import {MessageDirection} from "./enums/MessageDirection";
-import {MessageParams} from "./utils/base64Decoder";
 import {ContentTypes} from "./enums/ContentTypes";
 import {ConverterService} from "../services/FileConverter";
+import {ExternalMessageParams} from "./utils/ExternalMessageParams";
 
 export interface CustomMessage {
     direction: MessageDirection;
@@ -35,7 +35,7 @@ export class MessageService {
         return ContentTypes.TEXT;
     }
 
-    async addInboundMessage(conversationId: string, params: MessageParams): Promise<CustomMessage> {
+    async addInboundMessage(conversationId: string, params: ExternalMessageParams): Promise<CustomMessage> {
         // TODO: cleanup this method
         const contentType = await this.identifyContentType(params.mediaContentType);
         console.log('Message Content Type:', contentType)

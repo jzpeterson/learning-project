@@ -1,15 +1,16 @@
 import {handleIncomingMessage} from "@rest-api/core/conversations/conversationManager";
-import {getParams} from "@rest-api/core/conversations/utils/base64Decoder";
-import {TwilioClient} from "@rest-api/core/clients/_TwilioClient";
+import {TwilioClient} from "@rest-api/core/clients/TwilioClient";
+import {ExternalMessageParamDecoder} from "@rest-api/core/conversations/utils/ExternalMessageParamDecoder";
 
 const {MessagingResponse} = require("twilio").twiml;
 
 const twilioClient: TwilioClient = new TwilioClient();
+const externalMessageParamDecoder: ExternalMessageParamDecoder = new ExternalMessageParamDecoder();
 export const handler = async (event: any) => {
     console.log('Node.js version:', process.version);
     console.log("Twilio Event Received: \n", event);
 
-    const incomingMessageParams = await getParams(event)
+    const incomingMessageParams = await externalMessageParamDecoder.getParams(event)
 
     const nextMessage = await handleIncomingMessage(event)
 
