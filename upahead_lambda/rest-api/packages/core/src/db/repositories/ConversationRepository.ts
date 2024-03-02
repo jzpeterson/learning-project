@@ -60,3 +60,14 @@ export async function updateConversationStatusByRecipientAndAccountPhoneNumber(r
         .where("Conversation.recipient_phone_number", "=", recipientPhoneNumber)
         .execute();
 }
+
+
+export async function getConversationsByAccountPhoneNumber(accountPhoneNumber: string) {
+    console.log("Getting conversations by account phone number", accountPhoneNumber)
+    return await db
+        .selectFrom("Conversation")
+        .selectAll()
+        .where("Conversation.recipient_phone_number", "=", accountPhoneNumber)
+        .innerJoin("Message", "Conversation.id", "Message.conversation_id")
+        .execute();
+}

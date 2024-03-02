@@ -1,9 +1,10 @@
 import {handleIncomingMessage} from "@rest-api/core/conversations/conversationManager";
-import {sendTwilioMessage} from "@rest-api/core/clients/twilioClient";
 import {getParams} from "@rest-api/core/conversations/utils/base64Decoder";
+import {TwilioClient} from "@rest-api/core/clients/_TwilioClient";
 
 const {MessagingResponse} = require("twilio").twiml;
 
+const twilioClient: TwilioClient = new TwilioClient();
 export const handler = async (event: any) => {
     console.log('Node.js version:', process.version);
     console.log("Twilio Event Received: \n", event);
@@ -19,7 +20,7 @@ export const handler = async (event: any) => {
     message.body(nextMessage);
 
     try {
-        const response = await sendTwilioMessage(
+        const response = await twilioClient.sendTwilioMessage(
             nextMessage,
             incomingMessageParams.recipientPhoneNumber,
             incomingMessageParams.accountPhoneNumber

@@ -32,6 +32,7 @@ export function UpAheadStack({stack}: StackContext) {
         },
         routes: {
             "POST /webhook/twilio": "packages/functions/src/twilioWebhook.handler",
+            "GET /conversations": "packages/functions/src/getConversationsByNumber.handler",
         },
     });
 

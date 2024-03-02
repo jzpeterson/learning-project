@@ -1,17 +1,17 @@
 import {
-    createConversation,
+    createConversation, getConversationsByAccountPhoneNumber,
     selectActiveConversationsBetweenAccountAndRecipient,
     updateConversationStatusByRecipientAndAccountPhoneNumber
 } from "../db/repositories/ConversationRepository";
 import {getParams} from "./utils/base64Decoder";
 import {ConversationStatus} from "./enums/ConversationStatus";
-import {sendTwilioMessage} from "../clients/twilioClient";
 import {MessageDirection} from "./enums/MessageDirection";
-import {addMessageToConversation} from "../db/repositories/MessageRepository";
 import {ContentTypes} from "./enums/ContentTypes";
 import {generateNextResponse} from "./responseGenerator";
 import {CustomMessage, MessageService} from "./MessageService";
+import {TwilioClient} from "../clients/_TwilioClient";
 
+const twilioClient: TwilioClient = new TwilioClient();
 const messageService: MessageService = new MessageService();
 export async function initiateConversation(accountPhoneNumber: string, recipientPhoneNumber: string) {
     await updateConversationStatusByRecipientAndAccountPhoneNumber(recipientPhoneNumber,
@@ -27,13 +27,18 @@ export async function initiateConversation(accountPhoneNumber: string, recipient
 
     const generatedMessage = await generateNextResponse(createdConversation.id)
 
-    await sendTwilioMessage(generatedMessage, accountPhoneNumber, recipientPhoneNumber);
+    await twilioClient.sendTwilioMessage(generatedMessage, accountPhoneNumber, recipientPhoneNumber);
 
     const message: CustomMessage = {
         direction: MessageDirection.OUTBOUND,
         content: generatedMessage
     }
     await messageService.addMessage(createdConversation.id, message);
+}
+
+export async function retrieveConversationsByNumber(accountPhoneNumber: string, utcDate: string) {
+    const conversations = await getConversationsByAccountPhoneNumber(accountPhoneNumber);
+    return conversations;
 }
 
 export async function handleIncomingMessage(event: any): Promise<string> {
