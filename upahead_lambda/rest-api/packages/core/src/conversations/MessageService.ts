@@ -48,7 +48,7 @@ export class MessageService {
             }
             s3MediaUrl = await this.fileConverter.convertAndUpload(
                 params.mediaUrl,
-                params.accountPhoneNumber,
+                params.internalPhoneNumber,
                 params.messageSid);
         }
 

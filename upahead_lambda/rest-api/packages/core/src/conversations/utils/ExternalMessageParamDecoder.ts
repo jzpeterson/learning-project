@@ -14,14 +14,29 @@ export class ExternalMessageParamDecoder {
 
         const params = new URLSearchParams(decodedEvent);
 
-        const returnValue = {
-            recipientPhoneNumber: params.get('To'),
-            accountPhoneNumber: params.get('From'),
+        const internalPhoneNumber: string = params.get('To') || "";
+        if (!internalPhoneNumber) {
+            throw new Error("Missing required 'To' phone number parameter");
+        }
+
+        const externalPhoneNumber: string = params.get('From') || "";
+        if (!externalPhoneNumber) {
+            throw new Error("Missing required 'From' phone number parameter");
+        }
+
+        const messageSid: string = params.get('MessageSid') || "";
+        if (!messageSid) {
+            throw new Error("Missing required 'MessageSid' parameter");
+        }
+
+        const returnValue: ExternalMessageParams = {
+            internalPhoneNumber: internalPhoneNumber,
+            externalPhoneNumber: externalPhoneNumber,
             message: params.get('Body'),
             mediaContentType: params.get('MediaContentType0'),
             numMedia: params.get('NumMedia'),
             mediaUrl: params.get('MediaUrl0'),
-            messageSid: params.get('MessageSid'),
+            messageSid: messageSid,
         };
         console.log("Decoded Event Body", decodedEvent);
         console.log("Returning params", returnValue);

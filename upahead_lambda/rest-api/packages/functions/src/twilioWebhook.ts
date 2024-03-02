@@ -23,8 +23,8 @@ export const handler = async (event: any) => {
     try {
         const response = await twilioClient.sendTwilioMessage(
             nextMessage,
-            incomingMessageParams.recipientPhoneNumber,
-            incomingMessageParams.accountPhoneNumber
+            incomingMessageParams.internalPhoneNumber,
+            incomingMessageParams.externalPhoneNumber
         );
         console.log(response);
     } catch (error) {

@@ -47,7 +47,7 @@ export async function handleIncomingMessage(event: any): Promise<string> {
     const inboundMessageParams = await externalMessageParamDecoder.getParams(event);
 
     const conversation =
-        await find_or_create_conversation(inboundMessageParams.accountPhoneNumber, inboundMessageParams.recipientPhoneNumber);
+        await find_or_create_conversation(inboundMessageParams.internalPhoneNumber, inboundMessageParams.externalPhoneNumber);
 
     console.log("Adding inbound message to conversation", conversation.id, inboundMessageParams)
     await messageService.addInboundMessage(conversation.id, inboundMessageParams)
@@ -59,7 +59,7 @@ export async function handleIncomingMessage(event: any): Promise<string> {
         content: generatedMessage,
         content_type: ContentTypes.TEXT
     }
-    console.log("Sending Outbound message to", inboundMessageParams.accountPhoneNumber, "from", inboundMessageParams.recipientPhoneNumber, ":", generatedMessage)
+    console.log("Sending Outbound message to", inboundMessageParams.internalPhoneNumber, "from", inboundMessageParams.externalPhoneNumber, ":", generatedMessage)
     await messageService.addMessage(conversation.id, accountToRecipientMessage)
     return generatedMessage
 }

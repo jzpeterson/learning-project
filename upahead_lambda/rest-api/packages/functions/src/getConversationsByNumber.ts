@@ -7,7 +7,7 @@ export const handler = async (event: any) => {
     // Extract query parameters from the event
     const queryParams = event.queryStringParameters;
     console.log("Query Parameters: \n", queryParams);
-    const accountPhoneNumber = queryParams?.accountPhoneNumber;
+    const accountPhoneNumber = queryParams?.internalPhoneNumber;
     const utcDate = queryParams?.utc;
 
     // Check if both accountPhoneNumber and utcDate are provided
