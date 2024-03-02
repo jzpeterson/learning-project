@@ -1,0 +1,23 @@
+Plan "Text" text
+
+ToCountry=US
+//Missing Media Content type
+&ToState=
+&SmsMessageSid=SM9fe50569099646e6010b3bb47348e522
+&NumMedia=0
+&ToCity=
+&FromZip=84050
+&SmsSid=SM9fe50569099646e6010b3bb47348e522
+&FromState=UT
+&SmsStatus=received
+&FromCity=OGDEN
+&Body=Text+for+comparison
+&FromCountry=US
+&To=%2B18446151430
+&MessagingServiceSid=MGb408fe4a968875dffe0b800d08cd6378
+&ToZip=
+&NumSegments=1
+&MessageSid=SM9fe50569099646e6010b3bb47348e522
+&AccountSid=ACb2722d11b73d22b594c81d79aed6b8d2
+&From=%2B18017916516
+&ApiVersion=2010-04-01

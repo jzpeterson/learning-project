@@ -1,0 +1,24 @@
+Single Image text
+
+ToCountry=US
+&MediaContentType0=image%2Fjpeg
+&ToState=
+&SmsMessageSid=MM3934ada51e7a20b35b4dd6c7635a29d2
+&NumMedia=1
+&ToCity=
+&FromZip=84050
+&SmsSid=MM3934ada51e7a20b35b4dd6c7635a29d2
+&FromState=UT
+&SmsStatus=received
+&FromCity=OGDEN
+&Body=
+&FromCountry=US
+&To=%2B18446151430
+&MessagingServiceSid=MGb408fe4a968875dffe0b800d08cd6378
+&ToZip=
+&NumSegments=1
+&MessageSid=MM3934ada51e7a20b35b4dd6c7635a29d2
+&AccountSid=ACb2722d11b73d22b594c81d79aed6b8d2
+&From=%2B18017916516
+&MediaUrl0=https%3A%2F%2Fapi.twilio.com%2F2010-04-01%2FAccounts%2FACb2722d11b73d22b594c81d79aed6b8d2%2FMessages%2FMM3934ada51e7a20b35b4dd6c7635a29d2%2FMedia%2FMEff408942d874d4301caea243989659ea
+&ApiVersion=2010-04-01

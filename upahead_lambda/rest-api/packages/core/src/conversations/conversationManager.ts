@@ -6,14 +6,15 @@ import {
 import {ConversationStatus} from "./enums/ConversationStatus";
 import {MessageDirection} from "./enums/MessageDirection";
 import {ContentTypes} from "./enums/ContentTypes";
-import {generateNextResponse} from "./responseGenerator";
 import {CustomMessage, MessageService} from "./MessageService";
 import {TwilioClient} from "../clients/TwilioClient";
 import {ExternalMessageParamDecoder} from "./utils/ExternalMessageParamDecoder";
+import {ConversationResponseGenerator} from "./ConversationResponseGenerator";
 
 const twilioClient: TwilioClient = new TwilioClient();
 const messageService: MessageService = new MessageService();
 const externalMessageParamDecoder = new ExternalMessageParamDecoder();
+const responseGenerator: ConversationResponseGenerator = new ConversationResponseGenerator();
 export async function initiateConversation(accountPhoneNumber: string, recipientPhoneNumber: string) {
     await updateConversationStatusByRecipientAndAccountPhoneNumber(recipientPhoneNumber,
         accountPhoneNumber, ConversationStatus.TERMINATED_INCOMPLETE);
@@ -26,7 +27,7 @@ export async function initiateConversation(accountPhoneNumber: string, recipient
     }
     const createdConversation = await createConversation(newConversation)
 
-    const generatedMessage = await generateNextResponse(createdConversation.id)
+    const generatedMessage = await responseGenerator.generateNextResponse(createdConversation.id)
 
     await twilioClient.sendTwilioMessage(generatedMessage, accountPhoneNumber, recipientPhoneNumber);
 
@@ -51,7 +52,7 @@ export async function handleIncomingMessage(event: any): Promise<string> {
     console.log("Adding inbound message to conversation", conversation.id, inboundMessageParams)
     await messageService.addInboundMessage(conversation.id, inboundMessageParams)
 
-    const generatedMessage = await generateNextResponse(conversation.id);
+    const generatedMessage = await responseGenerator.generateNextResponse(conversation.id);
 
     const accountToRecipientMessage: CustomMessage = {
         direction: MessageDirection.OUTBOUND,
