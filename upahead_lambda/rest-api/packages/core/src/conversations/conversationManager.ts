@@ -1,6 +1,9 @@
 import {
-    createConversation, getConversationById, getConversationsByInternalPhoneNumber,
+    createConversation,
+    getConversationById,
+    getConversationsByInternalPhoneNumber,
     selectActiveConversationsBetweenAccountAndRecipient,
+    selectConversationsBetweenInternalAndExternalPhoneNumber,
     updateConversationStatusByRecipientAndAccountPhoneNumber
 } from "../db/repositories/ConversationRepository";
 import {ConversationStatus} from "./enums/ConversationStatus";
@@ -12,7 +15,8 @@ import {ExternalMessageParamDecoder} from "./utils/ExternalMessageParamDecoder";
 import {
     Conversation,
     ConversationResponseGenerator,
-    convertBetweenDbAndApplicationConversationTypes
+    convertBetweenDbAndApplicationConversationTypes,
+    Message
 } from "./ConversationResponseGenerator";
 import {PhoneNumberValidator} from "./utils/PhoneNumberValidator";
 import {AccountClient} from "../dynamoDb/AccountClient";
@@ -59,10 +63,61 @@ export async function initiateConversation(internalPhoneNumber: string, external
     await twilioClient.sendTwilioMessage(generatedMessage, internalPhoneNumber, externalPhoneNumber);
 }
 
-export async function retrieveConversationsByNumber(accountPhoneNumber: string): Promise<Conversation[]> {
-    const validatedPhoneNumber = PhoneNumberValidator.validatePhoneNumber(accountPhoneNumber);
-    const conversations = await getConversationsByInternalPhoneNumber(validatedPhoneNumber);
-    const convertedConversations = conversations.map(convertBetweenDbAndApplicationConversationTypes);
+export async function retrieveMostRecentMessage(internalPhoneNumber: string,
+                                                externalPhoneNumber: string,
+                                                messageType: ContentTypes): Promise<Message | null> {
+    const validatedInternalPhoneNumber = PhoneNumberValidator.validatePhoneNumber(internalPhoneNumber);
+    const validatedExternalPhoneNumber = PhoneNumberValidator.validatePhoneNumber(externalPhoneNumber);
+    const conversations = await selectConversationsBetweenInternalAndExternalPhoneNumber(
+        validatedExternalPhoneNumber, validatedInternalPhoneNumber);
+
+    if (conversations.length === 0) {
+        throw new Error("No active conversation found between " + validatedInternalPhoneNumber + " and " + validatedExternalPhoneNumber);
+    }
+
+    let mostRecentMessage: Message | null = null;
+    let latestTimestamp: Date = new Date(0); // Epoch start
+    const convertedConversations: Conversation[] = conversations.map(convertBetweenDbAndApplicationConversationTypes);
+    convertedConversations.forEach(conversation => {
+        console.log("Checking conversation", conversation)
+        if (conversation.messages) {
+            console.log("Conversation has messages", conversation.messages.length)
+            conversation.messages.forEach(message => {
+                console.log("Checking message", message)
+                if (message.contentType === messageType && message.direction === 'INBOUND') {
+                    console.log("Found message with expected content type", message)
+                    const messageTimestamp = new Date(message.timestamp);
+                    if (messageTimestamp > latestTimestamp) {
+                        latestTimestamp = messageTimestamp;
+                        mostRecentMessage = message;
+                    }
+                }
+
+            });
+        }
+    });
+
+    if (!mostRecentMessage) {
+        throw new Error("No video messages found for the given numbers.");
+    }
+
+    return mostRecentMessage;
+}
+
+export async function retrieveConversationsByNumber(internalPhoneNumber: string,
+                                                    externalPhoneNumber?: string,
+                                                    latestVideoMessage?: boolean): Promise<Conversation[]> {
+    const validatedInternalPhoneNumber = PhoneNumberValidator.validatePhoneNumber(internalPhoneNumber);
+    const conversations = await getConversationsByInternalPhoneNumber(validatedInternalPhoneNumber);
+    let convertedConversations: Conversation[] = conversations.map(convertBetweenDbAndApplicationConversationTypes);
+
+    if (externalPhoneNumber) {
+        const validatedExternalPhoneNumber = PhoneNumberValidator.validatePhoneNumber(externalPhoneNumber);
+        convertedConversations = convertedConversations.filter((conversation) => {
+            return conversation.externalPhoneNumber === validatedExternalPhoneNumber;
+        });
+    }
+
     return Promise.all(convertedConversations);
 }
 

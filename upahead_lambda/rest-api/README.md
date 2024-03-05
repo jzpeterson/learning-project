@@ -25,7 +25,15 @@ PS C:\Users\jordo\upahead\upahead_node_project\upahead_lambda\rest-api> npx sst 
 ✔  Setting "TWILIO_ACCOUNT_SID"
 PS C:\Users\jordo\upahead\upahead_node_project\upahead_lambda\rest-api> npx sst secrets set TWILIO_AUTH_TOKEN *********   
 ✔  Setting "TWILIO_AUTH_TOKEN"
+
+npx sst secrets set CLOUD_CONVERT_API_KEY ********
+
+npx sst secrets set AWS_ACCESS_KEY_ID ********
+
+npx sst secrets set AWS_SECRET_ACCESS_KEY ********
 ```
+When updating secrets in the in prod environment append `--stage prod` to the command.
+
 
 Known issues:
 - We should not have a backup webhook url in twilio or it can lead to multiple messages being sent on cold starts.

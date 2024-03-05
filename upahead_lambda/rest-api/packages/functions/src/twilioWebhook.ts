@@ -2,8 +2,6 @@ import {handleIncomingMessage} from "@rest-api/core/conversations/conversationMa
 import {TwilioClient} from "@rest-api/core/clients/TwilioClient";
 import {ExternalMessageParamDecoder} from "@rest-api/core/conversations/utils/ExternalMessageParamDecoder";
 
-const {MessagingResponse} = require("twilio").twiml;
-
 const twilioClient: TwilioClient = new TwilioClient();
 const externalMessageParamDecoder: ExternalMessageParamDecoder = new ExternalMessageParamDecoder();
 export const handler = async (event: any) => {
@@ -15,10 +13,6 @@ export const handler = async (event: any) => {
     const nextMessage = await handleIncomingMessage(event)
 
     console.log("Next Message Identified:", nextMessage)
-
-    const twiml = new MessagingResponse();
-    const message = twiml.message();
-    message.body(nextMessage);
 
     try {
         const response = await twilioClient.sendTwilioMessage(

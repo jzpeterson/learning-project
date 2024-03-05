@@ -1,5 +1,4 @@
 import {getMessagesForConversation} from "../db/repositories/MessageRepository";
-// import {Message} from "../db/types/public/Message";
 import {MessageDirection} from "./enums/MessageDirection";
 import {updateConversationStatus} from "../db/repositories/ConversationRepository";
 import {ConversationStatus} from "./enums/ConversationStatus";
@@ -99,18 +98,21 @@ export interface Message {
     timestamp: Date;
 }
 
-export function convertBetweenDbAndApplicationConversationTypes(dbConversation: any): Promise<Conversation> {
+export function convertBetweenDbAndApplicationConversationTypes(dbConversation: any): Conversation {
     return {
         id: dbConversation.id,
         internalPhoneNumber: dbConversation.account_phone_number,
         externalPhoneNumber: dbConversation.recipient_phone_number,
         timestamp: dbConversation.last_update_time,
         status: dbConversation.status,
-        messages: dbConversation.messages,
+        messages: convertBetweenDBAndApplicationMessages(dbConversation.messages),
     }
 }
 
-export async function convertBetweenDBAndApplicationMessages(dbMessages: any[]): Promise<Message[]> {
+export function convertBetweenDBAndApplicationMessages(dbMessages: any[]): Message[] {
+    if (!dbMessages) {
+        return [];
+    }
     return dbMessages.map((dbMessage) => ({
         id: dbMessage.id,
         conversationId: dbMessage.conversation_id,

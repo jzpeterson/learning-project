@@ -6,6 +6,8 @@ export const handler = async (event: any) => {
     const queryParams = event.queryStringParameters;
     console.log("Query Parameters: \n", queryParams);
     const internalPhoneNumber = queryParams?.internalPhoneNumber;
+    const externalPhoneNumber = queryParams?.externalPhoneNumber;
+    const latestVideoMessage = queryParams?.latestVideoMessage;
 
     if (!internalPhoneNumber) {
         return {
@@ -16,7 +18,7 @@ export const handler = async (event: any) => {
         };
     }
 
-    const conversations = await retrieveConversationsByNumber(internalPhoneNumber);
+    const conversations = await retrieveConversationsByNumber(internalPhoneNumber, externalPhoneNumber);
 
     return {
         statusCode: 200,
