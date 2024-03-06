@@ -13,6 +13,23 @@ export class AccountClient {
                 lastMessage: "Thanks for the video! We'll be in touch soon.",
                 accountId: "1"
             }
+        },
+        {
+            accountId: "2",
+            accountName: "American Summer Camps",
+            internalPhoneNumber: "+18773941817",
+            conversationConfiguration: {
+                firstMessage:
+                    "Welcome to the video portion of your ASC application!\n" +
+                "INSTRUCTIONS: Please text us an informal, 30 second selfie-video using your phone 🤳\n" +
+                "PROMPT: Introduce yourself, skills/experience, and why you want to work at camp! 🏕️\n" +
+                "Then you’re done! ✅\n" +
+                "Text STOP to opt out anytime.",
+                expectedResponseType: ContentTypes.VIDEO,
+                lastMessage: "Thank you! From here, we will share your profile with summer camps that have open roles and are currently hiring. Camp Directors will reach out to you directly to initiate the hiring process. 🥳\n" +
+                "If anything comes up, please send us a note at hello@americansummercamps.com",
+                accountId: "2"
+            }
         }
     ];
 
