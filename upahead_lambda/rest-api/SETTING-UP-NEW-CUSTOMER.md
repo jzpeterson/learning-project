@@ -3,6 +3,8 @@
 2. In Twilio configure a webhook message to the prod url when text messages are received. 
 ![img.png](img.png)
 For example, the current prod twilio webhook url is `https://jllmnt4a27.execute-api.us-west-2.amazonaws.com/webhook/twilio`
+NOTE: Do not configure a backup webhook url or it can lead to multiple messages being sent on cold starts.
+
 3. In this repo, configure a new account and conversation configuration in AccountClient. We are
 storing these in code now but will eventually move them to a DB in the appropriate environment. 
 
@@ -24,6 +26,8 @@ lastMessage: "Thank you! From here, we will share your profile with summer camps
 accountId: "2"
 }
 }`
+
+It is important that the accountPhoneNumber follows the +########### format.    
 
 4. Send a text message to the configured number and verify the conversation configuration works
 as expected.
