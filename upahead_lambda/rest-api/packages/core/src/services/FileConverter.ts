@@ -2,9 +2,7 @@ import {Bucket} from "sst/node/bucket";
 import {Config} from "sst/node/config";
 import cloudconvert from 'cloudconvert';
 // @ts-ignore
-console.log("CloudConvert Object: ", cloudconvert.default)
-// @ts-ignore
-const CloudConvert = cloudconvert.default;
+const CloudConvert = cloudconvert.default; // Other import methods break on lambda. THis works for some reason. :shrug
 
 export class ConverterService {
     private readonly CLOUD_CONVERT_API_KEY: string;
@@ -70,6 +68,7 @@ export class ConverterService {
                             "import-file"
                         ],
                         "output_format": "mp4"
+
                     },
                     "export-file-to-s3": {
                         "operation": "export/s3",

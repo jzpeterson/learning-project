@@ -1,34 +1,29 @@
-import {getConversationsByAccountPhoneNumber} from "@rest-api/core/db/repositories/ConversationRepository";
+import {retrieveConversationsByNumber} from "@rest-api/core/conversations/conversationManager";
 
 export const handler = async (event: any) => {
-    // Log the incoming event to see its structure (useful for debugging)
     console.log("Get Conversations By Number: \n", event);
 
-    // Extract query parameters from the event
     const queryParams = event.queryStringParameters;
     console.log("Query Parameters: \n", queryParams);
-    const accountPhoneNumber = queryParams?.internalPhoneNumber;
-    const utcDate = queryParams?.utc;
+    const internalPhoneNumber = queryParams?.internalPhoneNumber;
+    const externalPhoneNumber = queryParams?.externalPhoneNumber;
+    const latestVideoMessage = queryParams?.latestVideoMessage;
 
-    // Check if both accountPhoneNumber and utcDate are provided
-    if (!accountPhoneNumber || !utcDate) {
+    if (!internalPhoneNumber) {
         return {
-            statusCode: 400, // Bad Request
+            statusCode: 400,
             body: JSON.stringify({
-                message: "Missing accountPhoneNumber or utc date in query parameters",
+                message: "Missing internalPhoneNumber in query parameters",
             }),
         };
     }
 
-    const conversations = await getConversationsByAccountPhoneNumber(accountPhoneNumber, utcDate);
-    // Example response
+    const conversations = await retrieveConversationsByNumber(internalPhoneNumber, externalPhoneNumber);
+
     return {
-        statusCode: 200, // OK
+        statusCode: 200,
         body: JSON.stringify({
-            message: "Successfully retrieved conversations",
-            accountPhoneNumber: accountPhoneNumber,
-            utcDate: utcDate,
-            conversations: conversations, // Assuming you add logic to retrieve and return conversations
+            conversations: conversations,
         }),
     };
 };

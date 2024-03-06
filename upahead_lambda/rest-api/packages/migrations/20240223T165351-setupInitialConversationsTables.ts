@@ -4,6 +4,7 @@ import {Kysely, sql} from "kysely";
  * @param db {Kysely<any>}
  */
 export async function up(db) {
+    console.log("Creating Conversation and Message tables");
     const current_timestamp = sql<null>`CURRENT_TIMESTAMP`;
     await db.schema
         .createTable('Conversation')
@@ -31,6 +32,7 @@ export async function up(db) {
 }
 
 export async function down(db) {
+    console.log("Dropping Conversation and Message tables");
     await db.schema
         .dropTable('Message')
         .execute();

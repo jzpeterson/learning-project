@@ -1,5 +1,5 @@
 // import {describe, expect, it} from "vitest";
-// import {down, up} from "../../../../migrations/20240223T165351-setupInitialConversationsTables.mjs";
+// import {down, up} from "../../../../migrations/20240223T165351-setupInitialConversationsTables.ts";
 // import {testDB} from "../test_postgresConversationsDB";
 //
 //
