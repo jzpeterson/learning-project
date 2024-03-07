@@ -27,7 +27,8 @@ accountId: "2"
 }
 }`
 
-It is important that the accountPhoneNumber follows the +########### format.    
+It is important that the accountPhoneNumber follows the +########### format. Make sure that emojis and line breaks are being 
+sent correctly.
 
 4. Send a text message to the configured number and verify the conversation configuration works
 as expected.

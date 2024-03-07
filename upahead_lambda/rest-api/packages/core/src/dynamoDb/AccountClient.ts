@@ -8,7 +8,11 @@ export class AccountClient {
             accountName: "Testing Account",
             internalPhoneNumber: "+18446151430",
             conversationConfiguration: {
-                firstMessage: "Hello, please send us a short video message about why upahead is awesome.",
+                firstMessage: ("Welcome to the video portion of your ASC application! " + "\n\n" +
+                    "INSTRUCTIONS: Please text us an informal, 30 second selfie-video using your phone 🤳 " + "\n\n" +
+                    "PROMPT: Introduce yourself, skills/experience, and why you want to work at camp! 🏕️ " + "\n\n" +
+                    "Then you’re done! ✅ " + "\n\n" +
+                    "Text STOP to opt out anytime."),
                 expectedResponseType: ContentTypes.VIDEO,
                 lastMessage: "Thanks for the video! We'll be in touch soon.",
                 accountId: "1"
@@ -20,13 +24,13 @@ export class AccountClient {
             internalPhoneNumber: "+18773941817",
             conversationConfiguration: {
                 firstMessage:
-                    "Welcome to the video portion of your ASC application!\n" +
-                "INSTRUCTIONS: Please text us an informal, 30 second selfie-video using your phone 🤳\n" +
-                "PROMPT: Introduce yourself, skills/experience, and why you want to work at camp! 🏕️\n" +
-                "Then you’re done! ✅\n" +
-                "Text STOP to opt out anytime.",
+                    ("Welcome to the video portion of your ASC application! " + "\n\n" +
+                        "INSTRUCTIONS: Please text us an informal, 30 second selfie-video using your phone 🤳 " + "\n\n" +
+                        "PROMPT: Introduce yourself, skills/experience, and why you want to work at camp! 🏕️ " + "\n\n" +
+                        "Then you’re done! ✅ " + "\n\n" +
+                        "Text STOP to opt out anytime."),
                 expectedResponseType: ContentTypes.VIDEO,
-                lastMessage: "Thank you! From here, we will share your profile with summer camps that have open roles and are currently hiring. Camp Directors will reach out to you directly to initiate the hiring process. 🥳\n" +
+                lastMessage: "Thank you! From here, we will share your profile with summer camps that have open roles and are currently hiring. Camp Directors will reach out to you directly to initiate the hiring process. 🥳\n\n" +
                 "If anything comes up, please send us a note at hello@americansummercamps.com",
                 accountId: "2"
             }
